@@ -21,6 +21,49 @@ In this work, we have introduced VFIMamba, the first approach to adapt the SSM m
 </div>
 
 ## :two_hearts:Installation
+```bash
+conda create -n VFIMamba python=3.11
+conda activate VFIMamba
+
+# conda 會自動安裝相容的 CUDA toolkit
+# pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+
+pip uninstall torch torchvision torchaudio -y
+pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu128
+
+# 安裝其他依賴
+# causal_conv1d-1.0.0
+# pip install https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.0.0/causal_conv1d-1.0.0+cu118torch1.13cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+
+pip install https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.5.4/causal_conv1d-1.5.4+cu12torch2.8cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
+# mamba_ssm-1.0.1
+# pip install https://github.com/state-spaces/mamba/releases/download/v1.0.1/mamba_ssm-1.0.1+cu118torch1.13cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+
+pip install https://github.com/state-spaces/mamba/releases/download/v2.2.5/mamba_ssm-2.2.5+cu12torch2.8cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
+
+pip install scikit-image==0.19.2
+pip install opencv-python timm tqdm tensorboard
+
+--------------------------------------------
+pip install "numpy<2"
+pip install transformers==4.30.0
+# 移除預編譯的 mamba_ssm
+pip uninstall mamba_ssm causal_conv1d -y
+
+
+# 修改 mamba/setup.py 以避免記憶體超過用量
+def append_nvcc_threads(nvcc_extra_args):
+    return nvcc_extra_args + ["--threads", "1"]
+------------------------------------------
+
+# 下載模型檔
+wget https://huggingface.co/MCG-NJU/VFIMamba_ckpts/resolve/main/ckpt/VFIMamba.pkl
+wget https://huggingface.co/MCG-NJU/VFIMamba_ckpts/resolve/main/ckpt/VFIMamba_S.pkl
+```
+
+參考 https://github.com/MzeroMiko/VMamba/issues/378
+
+
 CUDA 11.7
 - torch 1.13.1
 - python 3.10.6
@@ -51,6 +94,8 @@ python hf_demo_2x.py --model **model[VFIMamba_S/VFIMamba]**      # for 2x interp
 ```shell
 python demo_2x.py  --model **model[VFIMamba_S/VFIMamba]**      # for 2x interpolation
 python demo_Nx.py --n 8 --model **model[VFIMamba_S/VFIMamba]** # for 8x interpolation
+# 整段影片生成
+python video_predict.py --model VFIMamba_S
 ```
 
 By running above commands with model VFIMamba, you should get the follow examples by default:
