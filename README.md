@@ -32,36 +32,31 @@ pip uninstall torch torchvision torchaudio -y
 pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu128
 
 # 安裝其他依賴
-# causal_conv1d-1.0.0
-# pip install https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.0.0/causal_conv1d-1.0.0+cu118torch1.13cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
-
+參考 https://github.com/MzeroMiko/VMamba/issues/378
+# causal_conv1d - 選擇符合自己CUDA、pytorch的版本
 pip install https://github.com/Dao-AILab/causal-conv1d/releases/download/v1.5.4/causal_conv1d-1.5.4+cu12torch2.8cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
-# mamba_ssm-1.0.1
-# pip install https://github.com/state-spaces/mamba/releases/download/v1.0.1/mamba_ssm-1.0.1+cu118torch1.13cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+# mamba_ssm - 直接clone mamba進行重新編譯
+# pip install https://github.com/state-spaces/mamba/releases/download/v2.2.5/mamba_ssm-2.2.5+cu12torch2.8cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
 
-pip install https://github.com/state-spaces/mamba/releases/download/v2.2.5/mamba_ssm-2.2.5+cu12torch2.8cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
+--------------------------------------------
+# 修改 mamba/setup.py 以避免記憶體超過用量
+def append_nvcc_threads(nvcc_extra_args):
+    return nvcc_extra_args + ["--threads", "2"]
+
+# 重新編譯 mamba_ssm
+cd mamba
+export CUDA_HOME=/usr/local/cuda-12.8
+export TORCH_CUDA_ARCH_LIST="12.0"
+pip install -e .
+------------------------------------------
 
 pip install scikit-image==0.19.2
 pip install opencv-python timm tqdm tensorboard
-
---------------------------------------------
-pip install "numpy<2"
-pip install transformers==4.30.0
-# 移除預編譯的 mamba_ssm
-pip uninstall mamba_ssm causal_conv1d -y
-
-
-# 修改 mamba/setup.py 以避免記憶體超過用量
-def append_nvcc_threads(nvcc_extra_args):
-    return nvcc_extra_args + ["--threads", "1"]
-------------------------------------------
 
 # 下載模型檔
 wget https://huggingface.co/MCG-NJU/VFIMamba_ckpts/resolve/main/ckpt/VFIMamba.pkl
 wget https://huggingface.co/MCG-NJU/VFIMamba_ckpts/resolve/main/ckpt/VFIMamba_S.pkl
 ```
-
-參考 https://github.com/MzeroMiko/VMamba/issues/378
 
 
 CUDA 11.7

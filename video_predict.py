@@ -2,6 +2,9 @@ import cv2
 import torch
 from Trainer_finetune import Model
 from benchmark.utils.padder import InputPadder
+import time
+
+current_timestamp = time.time()
 
 # 載入模型
 model = Model(-1)
@@ -16,7 +19,7 @@ width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # 輸出影片
-out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps*2, (width, height))
+out = cv2.VideoWriter('output2.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps*2, (width, height))
 
 ret, frame1 = video.read()
 while True:
@@ -46,3 +49,5 @@ while True:
 out.write(frame1)  # 最後一幀
 video.release()
 out.release()
+end_timestamp = time.time()
+print(f"Processing time: {end_timestamp - current_timestamp} seconds")
