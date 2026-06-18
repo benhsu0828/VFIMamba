@@ -90,7 +90,11 @@ python hf_demo_2x.py --model **model[VFIMamba_S/VFIMamba]**      # for 2x interp
 python demo_2x.py  --model **model[VFIMamba_S/VFIMamba]**      # for 2x interpolation
 python demo_Nx.py --n 8 --model **model[VFIMamba_S/VFIMamba]** # for 8x interpolation
 # 整段影片生成
-python video_predict.py --model VFIMamba_S
+python video_predict.py \
+  --model VFIMamba_S \
+  --video /home/ben/github/VFIMamba/result_video.mp4 \
+  --output /home/ben/github/BadmintonAnalyze/runs/VFI_enhance/41090A025_VFI_4x.mp4 \
+  --multiplier 4
 ```
 
 By running above commands with model VFIMamba, you should get the follow examples by default:
